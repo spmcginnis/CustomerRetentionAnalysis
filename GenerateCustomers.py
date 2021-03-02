@@ -1,4 +1,3 @@
-from DateTime import DateTime as dt
 import names
 from random import randint as RI
 import pyodbc  #(ODBC = Open DataBase Connectivity standard)
@@ -54,6 +53,7 @@ def customer_list_to_sql(customer_list, table_name):
 
 # Check if a certain table exists and if it doesn't make it
 # TODO feed the column names in as args
+# TODO set primary key (?)
 def make_table_if_new(table_name, connection):
     cursor = connection.cursor()
     if cursor.tables(table=table_name, tableType='TABLE').fetchone():
