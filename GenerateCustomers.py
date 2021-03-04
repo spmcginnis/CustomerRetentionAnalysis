@@ -53,18 +53,20 @@ def customer_list_to_sql(customer_list, table_name):
 
 # Check if a certain table exists and if it doesn't make it
 # TODO feed the column names in as args
-# TODO set primary key (?)
 def make_table_if_new(table_name, connection):
     cursor = connection.cursor()
     if cursor.tables(table=table_name, tableType='TABLE').fetchone():
-        print(f"{table_name} exists")
+        print(f"Warning: {table_name} already exists. No changes were commited.")
     else:
         print(f"Creating table name {table_name}")
 
-        
+        # Creating a primary key:
+        # https://docs.microsoft.com/en-us/sql/relational-databases/tables/create-primary-keys?view=sql-server-ver15
         cursor.execute(f'''
                        CREATE TABLE {table_name}
                        (
+                           customer_id int IDENTITY (1,1) NOT NULL,
+                           CONSTRAINT PK_{table_name}_customer_id PRIMARY KEY CLUSTERED (customer_id),
                            given_name NVARCHAR(50),
                            family_name NVARCHAR(50),
                            gender NCHAR(10),
