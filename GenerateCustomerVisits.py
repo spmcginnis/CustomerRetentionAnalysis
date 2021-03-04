@@ -33,7 +33,7 @@ def generate_visits_over_date_range(id_list, first, last, min, max):
         
         for visit in range(0, visits):
             customer_id = id_list[RI(0,customer_count)]
-            customer_visits.append(f"{current_date}, {customer_id}")
+            customer_visits.append((current_date, customer_id))
         
         first += timedelta(days=1)
         
@@ -59,10 +59,20 @@ def make_table_if_new(table_name, connection):
                                 REFERENCES customers (customer_id)
                                 ON DELETE CASCADE
                                 ON UPDATE CASCADE,
-                            date datetime
+                            date date
                         )
                        ''')
         connection.commit()
+
+def commit_visit_data(connection, visit_data):
+    cursor = connection.cursor()
+    cursor.fast_executemany = True
+    command = f'''
+            INSERT INTO customer_visits (date, customer_id)
+            VALUES (?, ?)
+        '''
+    cursor.executemany(command, visit_data)
+    connection.commit()
 
 if __name__ == "__main__":
     connection = pyodbc.connect('Driver={SQL Server};'
@@ -73,7 +83,9 @@ if __name__ == "__main__":
     make_table_if_new("customer_visits", connection)
     
     id_list = get_customer_ids(connection)
-    print(generate_visits_over_date_range(id_list, date(2018,1,1), date(2018,1,3), 3, 5))
+    visit_data = generate_visits_over_date_range(id_list, date(2018,1,1), date(2018,1,3), 3, 5)
+    print(visit_data)
+    commit_visit_data(connection, visit_data)
     
     # TEMP # TESTING
     # cursor = connection.cursor()

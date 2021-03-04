@@ -46,7 +46,7 @@ def customer_list_to_sql(customer_list, table_name):
     # VALUES (value1, value2, value3, ...);
     
     for customer in customer_list:
-        value_array.append("(" + customer +")")
+        value_array.append("(" + customer + ")")
     
     output = command + ",".join(value_array)
     return output
