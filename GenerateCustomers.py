@@ -56,7 +56,7 @@ def customer_list_to_sql(customer_list, table_name):
 def make_table_if_new(table_name, connection):
     cursor = connection.cursor()
     if cursor.tables(table=table_name, tableType='TABLE').fetchone():
-        print(f"Warning: {table_name} already exists. No changes were commited.")
+        print(f"Warning: {table_name} already exists. No table was created.  Proceeding.")
     else:
         print(f"Creating table name {table_name}")
 
@@ -77,10 +77,10 @@ def make_table_if_new(table_name, connection):
 
 # Add list of customers to table
 # TODO feed the column names in as args and pass them to the function calls, once they are set to receive them
-def add_customer_list_to_table(table_name, connection):
+def add_customer_list_to_table(connection, table_name, num_customers):
     make_table_if_new(table_name, connection)
     cursor = connection.cursor()
-    customer_list = make_customer_list(1000)
+    customer_list = make_customer_list(num_customers)
     cursor.execute(customer_list_to_sql(customer_list, table_name))
     connection.commit()
 
@@ -95,4 +95,4 @@ if __name__ == "__main__":
                                 'Database=TestDB;'
                                 'Trusted_Connection=yes;')
     
-    add_customer_list_to_table("customers", connection)
+    add_customer_list_to_table(connection, "customers", 1000)
