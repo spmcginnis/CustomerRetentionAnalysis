@@ -32,7 +32,7 @@ def generate_visits_over_date_range(id_list, first, last, min, max):
         visits = RI(min, max)
         
         for visit in range(0, visits):
-            customer_id = id_list[RI(0,customer_count)]
+            customer_id = id_list[RI(0,customer_count-1)]
             customer_visits.append((current_date, customer_id))
         
         first += timedelta(days=1)
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     make_table_if_new("customer_visits", connection)
     
     id_list = get_customer_ids(connection)
-    visit_data = generate_visits_over_date_range(id_list, date(2018,1,1), date(2018,1,3), 3, 5)
+    visit_data = generate_visits_over_date_range(id_list, date(2018,1,1), date(2019,12,31), 300, 500)
     print(visit_data)
     commit_visit_data(connection, visit_data)
     
